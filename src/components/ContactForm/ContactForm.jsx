@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { nanoid } from 'nanoid';
-import PropTypes from 'prop-types';
+
 import { Form, Input, Label, Button } from './ContactForm.styled';
 import { useDispatch, useSelector } from 'react-redux';
 import { addContact, getContacts } from 'redux/contactsSlice';
+import Notiflix from 'notiflix';
 
-const ContactForm = ({ onSubmit }) => {
+const ContactForm = () => {
   const contacts = useSelector(getContacts);
   const dispatch = useDispatch();
 
@@ -15,8 +16,8 @@ const [number, setNumber] = useState('');
 const handleSubmit = e => {
   e.preventDefault();
 
-  if (contacts.some(({ name }) => name === contactName)) {
-    window.alert(`${contactName} is already in your contacts`);
+  if (contacts.some(({ name }) => name === contactName.toLowerCase())) {
+    Notiflix.Notify.warning(`Contact "${contactName}" is already in your contacts list`);
     return;
   }
   dispatch(
@@ -47,8 +48,6 @@ const handleChange = e => {
   }
 };
 
-
-
   return (
     <Form onSubmit={handleSubmit}>
       <Label>
@@ -76,10 +75,6 @@ const handleChange = e => {
       <Button type="submit">Add contact</Button>
     </Form>
   );
-};
-
-Form.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
 };
 
 export default ContactForm;
